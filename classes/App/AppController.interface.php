@@ -1,7 +1,7 @@
 <?php
 interface AppControllerInterface {
   public function __construct();
-  public function getData();
+  public function getData($userId);
 }
 
 ?>

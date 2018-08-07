@@ -7,7 +7,7 @@ if (!empty($_SESSION['userid'])) {
   require_once('classes/App/AppController.class.php');
   $userId = $_SESSION['userid'];
   $controller = new AppController();
-  $taskData = $controller->getData();
+  $taskData = $controller->getData($userId);
   $isEdit = false;
   $editedId;
   $editedDescription;

@@ -7,28 +7,39 @@ try {
   class AppModel extends Model implements AppModelInterface {
     protected $tableName = 'task';
 
-    public function getFullData($requestConfig) 
+    public function getFullData($userId, $sortBy) 
     {
-      $sortBy = strip_tags($requestConfig['sortBy']);
-      $query = "SELECT * FROM $this->tableName ORDER BY $sortBy";
+      $query = $this->getFullDataQuery($userId, $sortBy);
       $stmt = $this->executeQuery($query);
       return $this->transformStmtToArray($stmt); 
     }
 
-    public function addNewTask($newTask) 
+    private function getFullDataQuery($userId, $sortBy)
     {
-      $query = $this->addNewTaskQuery($newTask);
+      return (
+        "SELECT * 
+         FROM $this->tableName 
+         WHERE user_id=$userId
+         ORDER BY $sortBy
+        "
+      );
+    }
+
+    public function addNewTask($userId, $newTask) 
+    {
+      $query = $this->addNewTaskQuery($userId, $newTask);
       $stmt = $this->executeQuery($query);
       return true;
     }
 
-    private function addNewTaskQuery($newTask)
+    private function addNewTaskQuery($userId, $newTask)
     {
+      $crudeId = strip_tags($userId);
       $crudeTask = strip_tags($newTask);
       $dateNow = date('Y-m-d h:i:s');
       return (
-        "INSERT INTO $this->tableName 
-         VALUES (null, '$crudeTask', 0, '$dateNow')
+        "INSERT INTO $this->tableName (user_id, assigned_user_id, description, is_done, date_added)
+         VALUES ($crudeId, $crudeId, '$crudeTask', 0, '$dateNow')
         "
       );
     }

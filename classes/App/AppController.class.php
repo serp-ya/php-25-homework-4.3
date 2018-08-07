@@ -35,24 +35,17 @@ try {
       }    
     }
 
-    public function getData() 
+    public function getData($userId) 
     {
       $newTaskDescription = $this->newTaskDescription;
       $sortBy = $this->sortBy ? $this->sortBy : 'id';
       $newDescription = $this->newDescription;
-      $requestConfig = [
-        'sortBy' => $sortBy,
-      ];
 
       $action = $this->action;
       $taskId = $this->taskId;
 
       if ($newTaskDescription) {
-        try {
-          $this->sqlConnection->addNewTask($newTaskDescription);
-        } catch (Exception $error) {
-          exit("Error: $e->getMessage()");
-        }
+        $this->sqlConnection->addNewTask($userId, $newTaskDescription);
       }
       
       if ($newDescription) {
@@ -72,7 +65,7 @@ try {
         }
       }
 
-      return $this->sqlConnection->getFullData($requestConfig);
+      return $this->sqlConnection->getFullData($userId, $sortBy);
     }
   }
 } catch (Exception $error) {
