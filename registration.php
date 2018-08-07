@@ -43,7 +43,7 @@ $inputDefaultCssClasses = 'input';
 $inputCssClasses = $emptyFields ? "$inputDefaultCssClasses input_type_danger" : $inputDefaultCssClasses;
 
 function redirectToMain() {
-  header('Location: /');
+  header('Location: ./');
 }
 
 ?>

@@ -25,7 +25,7 @@ if (!empty($_SESSION['userid'])) {
 
       case 'exit': {
         session_destroy();
-        header('Location: /');
+        header('Location: ./');
         break;
       }
     }
@@ -58,7 +58,7 @@ if (!empty($_SESSION['userid'])) {
 
 <body style="margin: 0 auto; width: 1280px;">
 <?php if (empty($userId)): ?>
-  <a href="/registration.php" style="padding: 10px; background-color: lightgray;">
+  <a href="./registration.php" style="padding: 10px; background-color: lightgray;">
     Войти
   </a>
 

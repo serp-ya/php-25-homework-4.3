@@ -104,7 +104,7 @@ try {
 
     public function changeTaskDescription($id, $description) 
     {
-      $query = $this->changeTaskQuery($id, $description);
+      $query = $this->changeTaskDescriptionQuery($id, $description);
       $stmt = $this->executeQuery($query);
       return true;
     }
