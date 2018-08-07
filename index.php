@@ -1,20 +1,31 @@
 <?php
 date_default_timezone_set('UTC');
+session_start();
 $userId;
 
 if (!empty($_SESSION['userid'])) {
-  require_once('./Controller.class.php');
+  require_once('classes/App/AppController.class.php');
   $userId = $_SESSION['userid'];
-
-  $controller = new Controller();
+  $controller = new AppController();
   $taskData = $controller->getData();
   $isEdit = false;
   $editedId;
   $editedDescription;
 
-  if (!empty($_GET['action']) && $_GET['action'] === 'change') {
-    $isEdit = true;
-    $editedId = $_GET['id'];
+  if (!empty($_GET['action'])) {
+    switch($_GET['action']) {
+      case 'change': {
+        $isEdit = true;
+        $editedId = $_GET['id'];
+        break;
+      }
+
+      case 'exit': {
+        session_destroy();
+        header('Location: /');
+        break;
+      }
+    }
   }
 
   if ($isEdit) {
@@ -38,7 +49,7 @@ if (!empty($_SESSION['userid'])) {
 
 <body style="margin: 0 auto; width: 960px;">
 <?php if (empty($userId)): ?>
-  <a href="/registry.php" style="padding: 10px; background-color: lightgray;">
+  <a href="/registration.php" style="padding: 10px; background-color: lightgray;">
     Войти
   </a>
 
@@ -112,6 +123,8 @@ if (!empty($_SESSION['userid'])) {
       <?php endforeach; ?>
     </tbody>
   </table>
+
+  <p><a href="?action=exit">Выход</a></p>
 
 <?php endif; ?>
 </body>

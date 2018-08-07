@@ -1,30 +1,11 @@
 <?php
+require_once('classes/Model.abs.class.php');
+require_once('classes/App/AppModel.interface.php');
 
 try {
 
-  class SqlCore {
-    private $db;
-    private $config;
-    private $tableName = 'dump';
-
-    public function __construct() 
-    {
-      $configJson = file_get_contents('./config.json');
-      $this->config = json_decode($configJson, true);
-
-      $userName = $this->config['username'];
-      $password = $this->config['password'];
-
-      $connectQuery = $this->getConnectQuery();
-      $this->db = new PDO($connectQuery, $userName, $password);
-    }
-
-    private function getConnectQuery() 
-    {
-      $serverName = $this->config['server'];
-      $dbName = $this->config['dbName'];
-      return "mysql:host={$serverName};dbname={$dbName}";
-    }
+  class AppModel extends Model implements AppModelInterface {
+    protected $tableName = 'task';
 
     public function getFullData($requestConfig) 
     {
@@ -32,24 +13,6 @@ try {
       $query = "SELECT * FROM $this->tableName ORDER BY $sortBy";
       $stmt = $this->executeQuery($query);
       return $this->transformStmtToArray($stmt); 
-    }
-
-    private function executeQuery($query)
-    {
-      $stmt = $this->db->prepare($query);
-      $stmt->execute();
-      return $stmt;
-    }
-
-    private function transformStmtToArray($stmt)
-    {
-      $response = [];
-
-      while($row = $stmt->fetch()) {
-        $response[] = $row;
-      }
-
-      return $response;
     }
 
     public function addNewTask($newTask) 
@@ -64,7 +27,9 @@ try {
       $crudeTask = strip_tags($newTask);
       $dateNow = date('Y-m-d h:i:s');
       return (
-        "INSERT INTO $this->tableName VALUES (null, '$crudeTask', 0, '$dateNow')"
+        "INSERT INTO $this->tableName 
+         VALUES (null, '$crudeTask', 0, '$dateNow')
+        "
       );
     }
 
@@ -80,7 +45,10 @@ try {
       $crudeId = strip_tags($id);
       $crudeDescription = strip_tags($description);
       return (
-        "UPDATE $this->tableName SET description='{$crudeDescription}' WHERE id={$crudeId}"
+        "UPDATE $this->tableName 
+         SET description='{$crudeDescription}' 
+         WHERE id={$crudeId}
+        "
       );
     }
 
@@ -95,7 +63,10 @@ try {
     {
       $crudeId = strip_tags($id);
       return (
-        "UPDATE $this->tableName SET is_done=1 WHERE id={$crudeId}"
+        "UPDATE $this->tableName 
+         SET is_done=1 
+         WHERE id={$crudeId}
+        "
       );
     }
 
@@ -110,11 +81,15 @@ try {
     {
       $crudeId = strip_tags($id);
       return (
-        "DELETE FROM $this->tableName WHERE id={$crudeId}"
+        "DELETE 
+         FROM $this->tableName 
+         WHERE id={$crudeId}
+        "
       );
     }
   }
-
-} catch(PDOException $error) {
-  exit("Error: $e->getMessage()");
+} catch (Exception $error) {
+  exit('Error: ' . $error->getMessage());
 }
+
+?>
