@@ -13,7 +13,7 @@ try {
     {
       $crudeLogin = (string) strip_tags($login);
       $crudePassword = (string) strip_tags($password);
-      $query = $this->prepareLoginUserQuery($crudeLogin, $crudePassword);
+      $query = $this->prepareLoginUserQuery($crudeLogin, md5($crudePassword));
       $stmt = $this->executeQuery($query);
       return $stmt->fetch();
     }
@@ -32,7 +32,7 @@ try {
     {
       $crudeLogin = (string) strip_tags($login);
       $crudePassword = (string) strip_tags($password);
-      $query = $this->prepareRegistrationUserQuery($crudeLogin, $crudePassword);
+      $query = $this->prepareRegistrationUserQuery($crudeLogin, md5($crudePassword));
       $stmt = $this->executeQuery($query);
       return [
         'id' => $this->db->lastInsertId(),
