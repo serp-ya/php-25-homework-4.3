@@ -8,6 +8,8 @@ try {
   class AppController extends Controller implements AppControllerInterface {
     private $newTaskDescription;
     private $newDescription;
+    private $changedTaskId;
+    private $assignedUser;
     private $sortBy;
     private $taskId;
     private $action;
@@ -18,6 +20,10 @@ try {
 
       if (!empty($_POST['new-task'])) {
         $this->newTaskDescription = (string) $_POST['new-task'];
+
+      } else if (!empty($_POST['task_id']) && !empty($_POST['assigned_user'])) {
+        $this->changedTaskId = (int) $_POST['task_id'];
+        $this->assignedUser = (string) $_POST['assigned_user'];
 
       } else if (!empty($_POST['sort-by'])) {
         $this->sortBy = (string) $_POST['sort-by'];
@@ -40,6 +46,8 @@ try {
       $newTaskDescription = $this->newTaskDescription;
       $sortBy = $this->sortBy ? $this->sortBy : 'id';
       $newDescription = $this->newDescription;
+      $changedTaskId = $this->changedTaskId;
+      $assignedUser = $this->assignedUser;
 
       $action = $this->action;
       $taskId = $this->taskId;
@@ -49,8 +57,12 @@ try {
       }
       
       if ($newDescription) {
-        $this->sqlConnection->changeTask($taskId, $newDescription);
+        $this->sqlConnection->changeTaskDescription($taskId, $newDescription);
         header("Location: ./");
+      }
+
+      if ($changedTaskId && $assignedUser) {
+        $this->sqlConnection->newAssignTask($changedTaskId, $assignedUser);
       }
 
       switch($action) {      
@@ -65,12 +77,16 @@ try {
         }
       }
 
-      return $this->sqlConnection->getFullData($userId, $sortBy);
+      return $this->sqlConnection->getTasks($userId, $sortBy);
     }
 
-    public function getAssignedData($userId)
+    public function getAssignedTasks($userId)
     {
-      return $this->sqlConnection->getAssignedData($userId);
+      return $this->sqlConnection->getTasks($userId, 'id', 'assigned');
+    }
+
+    public function getUsersList() {
+      return $this->sqlConnection->getUsersList();
     }
   }
 } catch (Exception $error) {

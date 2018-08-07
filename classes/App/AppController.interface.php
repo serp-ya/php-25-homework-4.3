@@ -2,7 +2,8 @@
 interface AppControllerInterface {
   public function __construct();
   public function getData($userId);
-  // public function getAssignedData($userId);
+  public function getAssignedTasks($userId);
+  public function getUsersList();
 }
 
 ?>

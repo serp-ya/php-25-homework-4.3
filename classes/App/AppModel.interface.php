@@ -1,10 +1,11 @@
 <?php
 interface AppModelInterface
 {
-  public function getFullData($userId, $sortBy);
-  // public function getAssignedData($userId);
+  public function getTasks($userId, $sortBy, $mode);
+  public function getUsersList();
   public function addNewTask($userId, $newTask);
-  public function changeTask($id, $description);
+  public function changeTaskDescription($id, $description);
+  public function newAssignTask($taskId, $assignedUser);
   public function doneTask($id);
   public function deleteTask($id);
 }

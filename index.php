@@ -8,7 +8,9 @@ if (!empty($_SESSION['userid'])) {
   $userId = $_SESSION['userid'];
   $controller = new AppController();
   $taskData = $controller->getData($userId);
-  // $assignedData = $controller->getAssignedData($userId);
+  $assignedData = $controller->getAssignedTasks($userId);
+  $usersData = $controller->getUsersList();
+  $usersDataOptionsHtml = '';
   $isEdit = false;
   $editedId;
   $editedDescription;
@@ -36,6 +38,12 @@ if (!empty($_SESSION['userid'])) {
       }
     }
   }
+
+  foreach ($usersData as $user) {
+    $usersDataOptionsHtml .= '<option value="' . $user['id'] . '">'
+      . $user['login']
+      . '</option> \n';
+  }
 }
 ?>
 
@@ -48,7 +56,7 @@ if (!empty($_SESSION['userid'])) {
   <title>hw-4-2</title>
 </head>
 
-<body style="margin: 0 auto; width: 960px;">
+<body style="margin: 0 auto; width: 1280px;">
 <?php if (empty($userId)): ?>
   <a href="/registration.php" style="padding: 10px; background-color: lightgray;">
     Войти
@@ -106,6 +114,7 @@ if (!empty($_SESSION['userid'])) {
         <td></td>
         <td>Автор</td>
         <td>Ответственный</td>
+        <td>Делегировать задачу</td>
       </tr>
     </thead>
 
@@ -123,6 +132,15 @@ if (!empty($_SESSION['userid'])) {
           </td>
           <td><?php echo $task['author']; ?></td>
           <td><?php echo $task['assigned_user']; ?></td>
+          <td>
+            <form method="POST">
+              <input name="task_id" type="hidden" value="<?php echo $task['id'];?>">
+              <select name="assigned_user">
+                <?php echo $usersDataOptionsHtml; ?>
+              </select>
+              <input type="submit" value="Переложить ответственность">
+            </form>
+          </td>
 
         </tr>
       <?php endforeach; ?>
