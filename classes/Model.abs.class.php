@@ -2,7 +2,6 @@
 abstract class Model {
   protected $db;
   protected $config;
-  protected $tableName;
 
   public function __construct() 
   {

@@ -5,7 +5,7 @@ require_once('classes/Registration/RegistrationModel.interface.php');
 try {
 
   class RegistrationModel extends Model implements RegistrationModelInterface {
-    protected $usersTableName = 'user';
+    private $usersTableName = 'user';
     private $crudeLogin;
     private $crudePassword;
 

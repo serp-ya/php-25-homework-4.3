@@ -5,7 +5,8 @@ require_once('classes/App/AppModel.interface.php');
 try {
 
   class AppModel extends Model implements AppModelInterface {
-    protected $tableName = 'task';
+    private $taskTableName = 'task';
+    private $userTableName = 'user';
 
     public function getFullData($userId, $sortBy) 
     {
@@ -16,11 +17,24 @@ try {
 
     private function getFullDataQuery($userId, $sortBy)
     {
+      $taskTableName = $this->taskTableName;
+      $userTableName = $this->userTableName;
       return (
-        "SELECT * 
-         FROM $this->tableName 
-         WHERE user_id=$userId
-         ORDER BY $sortBy
+        "SELECT
+          $taskTableName.id, 
+          $userTableName.login as author, 
+          (
+            SELECT login 
+            FROM $userTableName 
+            WHERE id=$taskTableName.assigned_user_id
+          ) as assigned_user, 
+          $taskTableName.description, 
+          $taskTableName.is_done, 
+          $taskTableName.date_added
+         FROM $userTableName
+         JOIN $taskTableName
+            on $taskTableName.user_id = user.id
+         WHERE $taskTableName.user_id = 7
         "
       );
     }
@@ -38,7 +52,7 @@ try {
       $crudeTask = strip_tags($newTask);
       $dateNow = date('Y-m-d h:i:s');
       return (
-        "INSERT INTO $this->tableName (user_id, assigned_user_id, description, is_done, date_added)
+        "INSERT INTO $this->taskTableName (user_id, assigned_user_id, description, is_done, date_added)
          VALUES ($crudeId, $crudeId, '$crudeTask', 0, '$dateNow')
         "
       );
@@ -56,7 +70,7 @@ try {
       $crudeId = strip_tags($id);
       $crudeDescription = strip_tags($description);
       return (
-        "UPDATE $this->tableName 
+        "UPDATE $this->taskTableName 
          SET description='{$crudeDescription}' 
          WHERE id={$crudeId}
         "
@@ -74,7 +88,7 @@ try {
     {
       $crudeId = strip_tags($id);
       return (
-        "UPDATE $this->tableName 
+        "UPDATE $this->taskTableName 
          SET is_done=1 
          WHERE id={$crudeId}
         "
@@ -93,7 +107,7 @@ try {
       $crudeId = strip_tags($id);
       return (
         "DELETE 
-         FROM $this->tableName 
+         FROM $this->taskTableName 
          WHERE id={$crudeId}
         "
       );

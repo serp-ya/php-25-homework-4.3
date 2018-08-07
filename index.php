@@ -103,6 +103,8 @@ if (!empty($_SESSION['userid'])) {
         <td>Дата добпаления</td>
         <td>Статус</td>
         <td></td>
+        <td>Автор</td>
+        <td>Ответственный</td>
       </tr>
     </thead>
 
@@ -118,6 +120,8 @@ if (!empty($_SESSION['userid'])) {
             <a href="?id=<?php echo $task['id'] ?>&action=done">Выполнить</a>
             <a href="?id=<?php echo $task['id'] ?>&action=delete">Удалить</a>
           </td>
+          <td><?php echo $task['author']; ?></td>
+          <td><?php echo $task['assigned_user']; ?></td>
 
         </tr>
       <?php endforeach; ?>

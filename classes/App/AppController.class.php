@@ -67,6 +67,11 @@ try {
 
       return $this->sqlConnection->getFullData($userId, $sortBy);
     }
+
+    public function getAssignedTasks($userId)
+    {
+      
+    }
   }
 } catch (Exception $error) {
   exit('Error: ' . $error->getMessage());
