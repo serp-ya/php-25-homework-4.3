@@ -8,6 +8,7 @@ if (!empty($_SESSION['userid'])) {
   $userId = $_SESSION['userid'];
   $controller = new AppController();
   $taskData = $controller->getData($userId);
+  // $assignedData = $controller->getAssignedData($userId);
   $isEdit = false;
   $editedId;
   $editedDescription;
@@ -128,6 +129,42 @@ if (!empty($_SESSION['userid'])) {
     </tbody>
   </table>
 
+  <p>Так же, посмотрите, чего Вам поставили в задачи:</p>
+
+
+  <?php if (!empty($assignedData)): ?>
+    <table style="width: 100%">
+      <thead style="background-color: #bfbfbf;">
+        <tr>
+          <td>Описание задачи</td>
+          <td>Дата добпаления</td>
+          <td>Статус</td>
+          <td></td>
+          <td>Автор</td>
+          <td>Ответственный</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        <?php foreach($assignedData as $task): ?>
+          <tr>
+
+            <td><?php echo $task['description']; ?></td>
+            <td><?php echo $task['date_added']; ?></td>
+            <td><?php echo $task['is_done'] ? 'Выполнено' : 'Не выполнено'; ?></td>
+            <td>
+              <a href="?id=<?php echo $task['id'] ?>&action=change">Изменить</a> 
+              <a href="?id=<?php echo $task['id'] ?>&action=done">Выполнить</a>
+              <a href="?id=<?php echo $task['id'] ?>&action=delete">Удалить</a>
+            </td>
+            <td><?php echo $task['author']; ?></td>
+            <td><?php echo $task['assigned_user']; ?></td>
+
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  <?php endif; ?>
   <p><a href="?action=exit">Выход</a></p>
 
 <?php endif; ?>

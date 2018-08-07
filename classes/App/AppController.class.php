@@ -68,9 +68,9 @@ try {
       return $this->sqlConnection->getFullData($userId, $sortBy);
     }
 
-    public function getAssignedTasks($userId)
+    public function getAssignedData($userId)
     {
-      
+      return $this->sqlConnection->getAssignedData($userId);
     }
   }
 } catch (Exception $error) {

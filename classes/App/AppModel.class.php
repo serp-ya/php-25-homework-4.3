@@ -26,7 +26,7 @@ try {
           (
             SELECT login 
             FROM $userTableName 
-            WHERE id=$taskTableName.assigned_user_id
+            WHERE id = $taskTableName.assigned_user_id
           ) as assigned_user, 
           $taskTableName.description, 
           $taskTableName.is_done, 
@@ -34,7 +34,8 @@ try {
          FROM $userTableName
          JOIN $taskTableName
             on $taskTableName.user_id = user.id
-         WHERE $taskTableName.user_id = 7
+         WHERE $taskTableName.user_id = $userId
+         ORDER BY $sortBy
         "
       );
     }
