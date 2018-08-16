@@ -19,53 +19,25 @@ try {
     {
       $taskTableName = $this->taskTableName;
       $userTableName = $this->userTableName;
+      $whereCondition = $mode === 'full'
+        ? "tt.user_id = $userId"
+        : "tt.user_id != $userId AND tt.assigned_user_id = $userId";
 
-      switch ($mode) {
-        case 'full': {
-          return (
-              "SELECT
-              $taskTableName.id, 
-              $userTableName.login as author, 
-              (
-                SELECT login 
-                FROM $userTableName 
-                WHERE id = $taskTableName.assigned_user_id
-              ) as assigned_user, 
-              $taskTableName.description, 
-              $taskTableName.is_done, 
-              $taskTableName.date_added
-            FROM $userTableName
-            JOIN $taskTableName
-                on $taskTableName.user_id = user.id
-            WHERE $taskTableName.user_id = $userId
-            ORDER BY $sortBy
-            "
-          );
-        }
-        
-        case 'assigned': {
-          return (
-              "SELECT
-              $taskTableName.id, 
-              $userTableName.login as author, 
-              (
-                SELECT login 
-                FROM $userTableName 
-                WHERE id = $taskTableName.assigned_user_id
-              ) as assigned_user, 
-              $taskTableName.description, 
-              $taskTableName.is_done, 
-              $taskTableName.date_added
-            FROM $userTableName
-            JOIN $taskTableName
-                on $taskTableName.user_id = user.id
-            WHERE $taskTableName.assigned_user_id = $userId
-                AND $taskTableName.user_id != $userId
-            ORDER BY $sortBy
-            "
-          );
-        }
-      }
+      return (
+        "SELECT
+          tt.id, 
+          ut.login as author, 
+          uta.login as assigned_user, 
+          tt.description, 
+          tt.is_done, 
+          tt.date_added
+        FROM $taskTableName as tt
+        JOIN $userTableName as ut ON ut.id = tt.user_id
+        JOIN $userTableName as uta ON uta.id = tt.assigned_user_id
+        WHERE $whereCondition
+        ORDER BY $sortBy
+        "
+      );
     }
 
     public function getUsersList()
