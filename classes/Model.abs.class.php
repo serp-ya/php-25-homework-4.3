@@ -22,11 +22,17 @@ abstract class Model {
     return "mysql:host={$serverName};dbname={$dbName}";
   }
 
+  protected function clearQuery($query) {
+    return htmlspecialchars(
+      strip_tags($query)
+    );
+  }
+
   protected function executeQuery($query)
   {
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
-    return $stmt;
+    return $this->db->query(
+      $this->clearQuery($query)
+    );
   }
 
   protected function transformStmtToArray($stmt)
