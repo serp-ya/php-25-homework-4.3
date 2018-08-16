@@ -37,6 +37,14 @@ if (!empty($_SESSION['userid'])) {
         $editedDescription = $task['description'];
       }
     }
+
+    if (empty($editedDescription)) {
+      foreach ($assignedData as $task) {
+        if ((int) $task['id'] === (int) $editedId) {
+          $editedDescription = $task['description'];
+        }
+      }
+    }
   }
 
   foreach ($usersData as $user) {
